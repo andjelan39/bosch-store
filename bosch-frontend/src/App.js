@@ -1,13 +1,13 @@
-import './App.css';
-import NavBar from './components/NavBar';
-import ProductGrid from './components/ProductGrid';
-import {productsData} from './data/products';
+import "./App.css";
+import NavBar from "./components/NavBar";
+import ProductGrid from "./components/ProductGrid";
+import productsData from "./data/products.json";
 
 function App() {
   return (
     <div className="App">
-      <NavBar></NavBar>
-      <ProductGrid></ProductGrid>
+      <NavBar />
+      <ProductGrid products={productsData} />
     </div>
   );
 }

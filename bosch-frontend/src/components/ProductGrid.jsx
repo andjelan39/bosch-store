@@ -1,12 +1,14 @@
 import React from "react";
 import Product from "../components/Product";
 
-function ProductGrid() {
+function ProductGrid({ products }) {
   return (
     <div className="products-container">
       <h1 className="headline"> Power Tools</h1>
       <div className="products-grid">
-        <Product></Product>
+        {products.map((product) => (
+          <Product product={product} key={product.id} />
+        ))}
       </div>
     </div>
   );
