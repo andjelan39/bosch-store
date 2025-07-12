@@ -1,4 +1,5 @@
 import React from "react";
+import "../style/NavBar.css";
 import BoschLogo from "../boschlogo.png";
 
 function NavBar() {

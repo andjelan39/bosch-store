@@ -1,4 +1,5 @@
 import React from "react";
+import "../style/Product.css";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
 import {Link} from "react-router-dom";

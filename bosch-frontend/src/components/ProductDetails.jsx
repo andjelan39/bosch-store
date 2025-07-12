@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../style/ProductDetails.css";
 import { Link } from "react-router-dom";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
