@@ -1,21 +1,29 @@
 import React from "react";
+import { HiOutlinePlus } from "react-icons/hi2";
+import { HiOutlineMinus } from "react-icons/hi";
+import {Link} from "react-router-dom";
 
-function Product({ product }) {
+function Product({ product, getProductDetails }) {
   return (
     <div className="card">
       <div className="image-wrapper">
         <img src={product.images[0]} />
       </div>
       <div className="product-info">
-        <div className="product-name">{product.name}</div>
+        <Link to={`/product/${product.id}`} onClick={()=> getProductDetails(product.id)}>
+        <div className="product-name">{product.name}</div></Link>
         <div className="product-desc">{product.shortDescription}</div>
         <div className="product-price">{product.price} RSD</div>
 
         <div className="button-wrapper">
           <div className="quantity-button">
-            <button>-</button>
+            <button>
+              <HiOutlineMinus />
+            </button>
             <span>0</span>
-            <button>+</button>
+            <button>
+              <HiOutlinePlus />
+            </button>
           </div>
           <button className="cart-button">Add to cart</button>
         </div>

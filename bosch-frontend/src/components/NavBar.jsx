@@ -7,7 +7,7 @@ function NavBar() {
       <div className="navBar-logo">
         <img src={BoschLogo} />
       </div>
-      <div className="navBar-item">Products and Services</div>
+      <div className="navBar-item">Cart</div>
     </div>
   );
 }
