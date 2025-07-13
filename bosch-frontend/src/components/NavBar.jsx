@@ -8,7 +8,9 @@ function NavBar({ totalQty }) {
   return (
     <div className="navBar-container">
       <div className="navBar-logo">
+        <Link to={"/"}>
         <img src={BoschLogo} />
+        </Link>
       </div>
       <div className="navBar-cart">
         <Link to={"/cart"}>

@@ -66,12 +66,21 @@ function App() {
         <Route
           path="/product/:id"
           element={
-            <ProductDetails product={productDetails} addToCart={addToCart} />
+            <ProductDetails products={productsData} addToCart={addToCart} />
           }
         />
         <Route
           path="/cart"
           element={<Cart cart={cart} updateCart={updateCart} />}
+        />
+        <Route
+          path="*"
+          element={
+            <div className="container">
+              {" "}
+              <h2>404 Page Not Found</h2>{" "}
+            </div>
+          }
         />
       </Routes>
     </BrowserRouter>

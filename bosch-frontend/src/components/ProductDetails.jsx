@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../style/ProductDetails.css";
 import "../style/Product.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
 
-function ProductDetails({ product, addToCart }) {
-  const [selectedImage, setSelectedImage] = useState(`/${product.images[0]}`);
+function ProductDetails({ products, addToCart }) {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    const foundProduct = products.find((prod) => prod.id.toString() === id);
+    setProduct(foundProduct);
+    if (foundProduct) {
+      setSelectedImage(`/${foundProduct.images[0]}`);
+    }
+  }, [id, products]);
 
   const increaseQty = () => setQuantity(quantity + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
@@ -18,6 +28,17 @@ function ProductDetails({ product, addToCart }) {
       setQuantity(0);
     }
   };
+
+  if (!product) {
+    return (
+      <div className="container">
+        <p>Product not found.</p>
+        <p>
+          Back to <Link to={"/"}>Home page. </Link>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
