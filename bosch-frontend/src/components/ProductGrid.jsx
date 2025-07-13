@@ -3,7 +3,7 @@ import "../style/ProductGrid.css";
 import Product from "../components/Product";
 import { BsSearch } from "react-icons/bs";
 
-function ProductGrid({ products, getProductDetails }) {
+function ProductGrid({ products, getProductDetails, addToCart }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("none");
   const [debouncedTerm, setDebouncedTerm] = useState("");
@@ -40,7 +40,7 @@ function ProductGrid({ products, getProductDetails }) {
   }, [debouncedTerm, sortOrder, products]);
 
   return (
-    <div className="products-container">
+    <div className="container">
       <h1 className="headline"> Power Tools</h1>
       <div className="filter-section">
         <div className="sorting-area">
@@ -72,6 +72,7 @@ function ProductGrid({ products, getProductDetails }) {
             product={product}
             key={product.id}
             getProductDetails={getProductDetails}
+            addToCart={addToCart}
           />
         ))}
       </div>

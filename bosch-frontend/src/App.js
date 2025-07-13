@@ -5,10 +5,12 @@ import ProductDetails from "./components/ProductDetails";
 import productsData from "./data/products.json";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
+import Cart from "./components/Cart";
 
 function App() {
-
   const [productDetails, setProductDetails] = useState();
+  const [cart, setCart] = useState([]);
+
   const getProductDetails = (id) => {
     if (id == null) {
       setProductDetails(null);
@@ -21,12 +23,56 @@ function App() {
     }
   };
 
+  const addToCart = (product, quantity) => {
+    console.log("Dodati proizvod: " + product.name);
+    setCart((prevCart) => {
+      const existingProducts = prevCart.find((item) => item.id === product.id);
+      if (existingProducts) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity }];
+      }
+    });
+  };
+
+  const updateCart = (productId, newQuantity) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <BrowserRouter className="App">
-      <NavBar />
+      <NavBar totalQty={totalQty} />
       <Routes>
-        <Route path="/" element={<ProductGrid products={productsData} getProductDetails={getProductDetails} />} />
-        <Route path="/product/:id" element={<ProductDetails product={productDetails} />} />
+        <Route
+          path="/"
+          element={
+            <ProductGrid
+              products={productsData}
+              getProductDetails={getProductDetails}
+              addToCart={addToCart}
+            />
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetails product={productDetails} addToCart={addToCart} />
+          }
+        />
+        <Route
+          path="/cart"
+          element={<Cart cart={cart} updateCart={updateCart} />}
+        />
       </Routes>
     </BrowserRouter>
   );

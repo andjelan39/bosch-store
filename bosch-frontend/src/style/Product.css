@@ -90,6 +90,12 @@
   color: #313131;
 }
 
+.quantity-button span {
+  width: 16px;
+  text-align: center;
+  display: inline-block;
+}
+
 .quantity-button button {
   height: 32px;
   width: 32px;
@@ -126,7 +132,6 @@
 }
 
 @media (max-width: 600px) {
-
   .product-name {
     height: auto;
     display: block;
@@ -159,5 +164,9 @@
   .quantity-button,
   .cart-button {
     width: 100%;
+  }
+
+  .quantity-button span {
+    width: 12px;
   }
 }

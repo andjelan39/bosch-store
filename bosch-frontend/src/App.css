@@ -11,12 +11,23 @@ a {
   color: inherit;
 }
 
-.products-container {
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
   padding: 35px 15%;
 }
 
+.breadcrumbs {
+  margin-top: 10px;
+  margin-bottom: 35px;
+  font-weight: 400;
+  font-size: 16px;
+}
+
 @media (max-width: 600px) {
-  .products-container {
+  .container {
     padding: 30px;
   }
 }

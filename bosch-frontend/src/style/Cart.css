@@ -1,0 +1,26 @@
+.items-list {
+  background-color: white;
+  display: flex;
+  border-radius: 12px;
+  padding: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.13);
+}
+
+.empty-cart {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .items-list {
+    padding: 10px;
+  }
+
+  .empty-cart {
+    font-size: 14px;
+    font-weight: 400;
+    margin-left: 5px;
+  }
+}

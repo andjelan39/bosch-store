@@ -1,14 +1,21 @@
 import React from "react";
 import "../style/NavBar.css";
 import BoschLogo from "../boschlogo.png";
+import { PiShoppingCartFill } from "react-icons/pi";
+import { Link } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ totalQty }) {
   return (
     <div className="navBar-container">
       <div className="navBar-logo">
         <img src={BoschLogo} />
       </div>
-      <div className="navBar-item">Cart</div>
+      <div className="navBar-cart">
+        <Link to={"/cart"}>
+        <PiShoppingCartFill className="cart-icon" />
+        <div className="cart-badge">{totalQty}</div>
+        </Link>
+      </div>
     </div>
   );
 }

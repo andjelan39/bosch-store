@@ -1,14 +1,26 @@
 import React, { useState } from "react";
 import "../style/ProductDetails.css";
+import "../style/Product.css";
 import { Link } from "react-router-dom";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
 
-function ProductDetails({ product }) {
+function ProductDetails({ product, addToCart }) {
   const [selectedImage, setSelectedImage] = useState(`/${product.images[0]}`);
+  const [quantity, setQuantity] = useState(0);
+
+  const increaseQty = () => setQuantity(quantity + 1);
+  const decreaseQty = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+
+  const handleAddToCart = () => {
+    if (quantity > 0) {
+      addToCart(product, quantity);
+      setQuantity(0);
+    }
+  };
 
   return (
-    <div className="products-container">
+    <div className="container">
       <nav className="breadcrumbs">
         <Link to={"/"}>Home </Link> / <Link to={"/"}>Power Tools </Link> /{" "}
         {product.name}
@@ -16,9 +28,9 @@ function ProductDetails({ product }) {
 
       <div className="details-wrapper">
         <div className="product-gallery">
-            <div className="main-image-wrapper">
-                <img src={selectedImage} className="main-image" />
-            </div>
+          <div className="main-image-wrapper">
+            <img src={selectedImage} className="main-image" />
+          </div>
           <div className="thumbnail-wrapper">
             {product.images.map((image, i) => {
               const imageSrc = `/${image}`;
@@ -53,15 +65,17 @@ function ProductDetails({ product }) {
           <p className="details-price">{product.price} RSD</p>
           <div className="button-wrapper">
             <div className="quantity-button">
-              <button>
+              <button onClick={decreaseQty}>
                 <HiOutlineMinus />
               </button>
-              <span>0</span>
-              <button>
+              <span>{quantity}</span>
+              <button onClick={increaseQty}>
                 <HiOutlinePlus />
               </button>
             </div>
-            <button className="cart-button">Add to cart</button>
+            <button className="cart-button" onClick={handleAddToCart}>
+              Add to cart
+            </button>
           </div>
         </div>
       </div>
