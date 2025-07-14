@@ -23,7 +23,10 @@ function CartItem({ item, updateCart }) {
         <div className="right-quantity">
           <div className="cart-item-label">Quantity</div>
           <div className="cart-qty-button">
-            <button onClick={() => updateCart(item.id, item.quantity - 1)}>
+            <button
+              onClick={() => updateCart(item.id, item.quantity - 1)}
+              disabled={item.quantity <= 1}
+            >
               <HiOutlineMinus />
             </button>
             <span>{item.quantity}</span>

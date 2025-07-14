@@ -8,12 +8,14 @@ import {
   HiChevronDoubleLeft,
   HiChevronDoubleRight,
 } from "react-icons/hi2";
+import ProductListItem from "./ProductListItem";
 
 function ProductGrid({ products, getProductDetails, addToCart }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("none");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -120,17 +122,54 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
         <p>No products found.</p>
       ) : (
         <>
-          <p>{paginatedProducts.length} products</p>
-          <div className="products-grid">
-            {paginatedProducts.map((product) => (
-              <Product
-                product={product}
-                key={product.id}
-                getProductDetails={getProductDetails}
-                addToCart={addToCart}
-              />
-            ))}
+          <div className="view-options">
+            <p>{paginatedProducts.length} products</p>
+            <div className="radio-toggles">
+              <label>
+                <input
+                  type="radio"
+                  name="viewMode"
+                  value="grid"
+                  checked={viewMode === "grid"}
+                  onChange={() => setViewMode("grid")}
+                />
+                Grid
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="viewMode"
+                  value="list"
+                  checked={viewMode === "list"}
+                  onChange={() => setViewMode("list")}
+                />
+                List
+              </label>
+            </div>
           </div>
+          {viewMode === "grid" ? (
+            <div className="products-grid">
+              {paginatedProducts.map((product) => (
+                <Product
+                  product={product}
+                  key={product.id}
+                  getProductDetails={getProductDetails}
+                  addToCart={addToCart}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="products-list">
+              {paginatedProducts.map((product) => (
+                <ProductListItem
+                  product={product}
+                  key={product.id}
+                  getProductDetails={getProductDetails}
+                  addToCart={addToCart}
+                />
+              ))}
+            </div>
+          )}
           <div className="pagination-section">
             <button
               className="pagination-button outer-button"
