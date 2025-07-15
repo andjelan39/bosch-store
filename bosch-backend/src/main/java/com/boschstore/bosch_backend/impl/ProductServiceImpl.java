@@ -30,4 +30,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found."));
     }
+
+    @Override
+    public String addProduct(Product product) {
+        productRepository.save(product);
+        return "Product added successfully!";
+    }
 }
