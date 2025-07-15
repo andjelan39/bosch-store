@@ -13,6 +13,9 @@ public class CartItem {
     private Product product;
     private int quantity;
 
+    @ManyToOne
+    private User user;
+
     public CartItem() {
     }
 
@@ -43,6 +46,14 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
