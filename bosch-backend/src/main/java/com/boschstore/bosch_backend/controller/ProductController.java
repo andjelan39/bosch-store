@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,7 @@ public class ProductController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Page<Product> getAllProducts(
             @RequestParam(required = false) String searchTerm,
             @RequestParam(defaultValue = "0") int page,
@@ -32,11 +34,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Product getProductById(@PathVariable("id") String productId) {
         return productService.getProductById(productId);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String addProduct(@RequestBody Product product) {
         return productService.addProduct(product);
     }
