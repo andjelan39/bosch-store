@@ -123,7 +123,7 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
       ) : (
         <>
           <div className="view-options">
-            <p>{paginatedProducts.length} products</p>
+            <p>{filteredProducts.length} products</p>
             <div className="radio-toggles">
               <label>
                 <input
@@ -153,7 +153,6 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
                 <Product
                   product={product}
                   key={product.id}
-                  getProductDetails={getProductDetails}
                   addToCart={addToCart}
                 />
               ))}
@@ -164,7 +163,6 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
                 <ProductListItem
                   product={product}
                   key={product.id}
-                  getProductDetails={getProductDetails}
                   addToCart={addToCart}
                 />
               ))}
@@ -180,7 +178,7 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
             </button>
             <button
               className="pagination-button"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1), 1)}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               <HiChevronLeft />
@@ -191,8 +189,7 @@ function ProductGrid({ products, getProductDetails, addToCart }) {
             <button
               className="pagination-button"
               onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1), totalPages)
-              }
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               <HiChevronRight />

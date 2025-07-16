@@ -4,20 +4,32 @@ import "../style/Product.css";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
+import axios from "axios";
 
-function ProductDetails({ products, addToCart }) {
+function ProductDetails({ products, addToCart, token }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
-    const foundProduct = products.find((prod) => prod.id.toString() === id);
-    setProduct(foundProduct);
-    if (foundProduct) {
-      setSelectedImage(`/${foundProduct.images[0]}`);
-    }
-  }, [id, products]);
+    if (!token) return;
+
+    axios
+      .get(`http://localhost:8080/api/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("Fetched product" + res.data);
+        setProduct(res.data);
+        setSelectedImage("/" + res.data.images?.[0] || "");
+      })
+      .catch((err) => {
+        console.error("Error fetching products", err);
+      });
+  }, [token]);
 
   const increaseQty = () => setQuantity(quantity + 1);
   const decreaseQty = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));

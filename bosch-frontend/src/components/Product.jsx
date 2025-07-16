@@ -4,7 +4,7 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
-function Product({ product, getProductDetails, addToCart }) {
+function Product({ product, addToCart }) {
   const [quantity, setQuantity] = useState(0);
 
   const increaseQty = () => setQuantity(quantity + 1);
@@ -25,7 +25,6 @@ function Product({ product, getProductDetails, addToCart }) {
       <div className="product-info">
         <Link
           to={`/product/${product.id}`}
-          onClick={() => getProductDetails(product.id)}
         >
           <div className="product-name">{product.name}</div>
         </Link>

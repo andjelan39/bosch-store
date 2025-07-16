@@ -3,15 +3,17 @@ import NavBar from "./components/NavBar";
 import ProductGrid from "./components/ProductGrid";
 import ProductDetails from "./components/ProductDetails";
 import productsData from "./data/products.json";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import Cart from "./components/Cart";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
+import axios from "axios";
 
 function App() {
   const [productDetails, setProductDetails] = useState();
   const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const [token, setToken] = useState(
     window.sessionStorage.getItem("auth_token") || null
@@ -27,17 +29,24 @@ function App() {
     window.sessionStorage.removeItem("auth_token");
   }
 
-  const getProductDetails = (id) => {
-    if (id == null) {
-      setProductDetails(null);
-    } else {
-      productsData.map((product) => {
-        if (product.id === id) {
-          setProductDetails(product);
-        }
+  useEffect(() => {
+    const token = window.sessionStorage.getItem("auth_token");
+    if (!token) return;
+
+    axios
+      .get("http://localhost:8080/api/products", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("Fetched products" + res.data);
+        setProducts(res.data.content);
+      })
+      .catch((err) => {
+        console.error("Error fetching products", err);
       });
-    }
-  };
+  }, [token]);
 
   const addToCart = (product, quantity) => {
     console.log("Dodati proizvod: " + product.name);
@@ -69,28 +78,37 @@ function App() {
     <BrowserRouter className="App">
       <NavBar totalQty={totalQty} token={token} removeToken={removeToken} />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProductGrid
-              products={productsData}
-              getProductDetails={getProductDetails}
-              addToCart={addToCart}
-            />
-          }
-        />
-        <Route path="/login" element={<LoginForm addToken={addToken}/>} />
+        <Route path="/login" element={ token ? <Navigate to="/" /> :  <LoginForm addToken={addToken} />} />
         <Route path="/register" element={<RegisterForm />} />
-        <Route
-          path="/product/:id"
-          element={
-            <ProductDetails products={productsData} addToCart={addToCart} />
-          }
-        />
-        <Route
-          path="/cart"
-          element={<Cart cart={cart} updateCart={updateCart} />}
-        />
+        {token ? (
+          <>
+            <Route
+              path="/"
+              element={
+                <ProductGrid
+                  products={products}
+                  addToCart={addToCart}
+                />
+              }
+            />
+            <Route
+              path="/product/:id"
+              element={
+                <ProductDetails products={productsData} addToCart={addToCart} token={token} />
+              }
+            />
+            <Route
+              path="/cart"
+              element={<Cart cart={cart} updateCart={updateCart} />}
+            />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/product/:id" element={<Navigate to="/login" />} />
+            <Route path="/cart" element={<Navigate to="/login" />} />
+          </>
+        )}
         <Route
           path="*"
           element={
