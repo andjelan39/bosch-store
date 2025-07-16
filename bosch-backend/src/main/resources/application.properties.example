@@ -1,0 +1,2 @@
+spring.application.name=bosch-backend
+jwt.secret=YOUR_OWN_SECRET_KEY

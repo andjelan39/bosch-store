@@ -1,26 +1,33 @@
 package com.boschstore.bosch_backend.impl;
 
+import com.boschstore.bosch_backend.dto.CartItemDto;
+import com.boschstore.bosch_backend.dto.CartItemResponseDto;
 import com.boschstore.bosch_backend.model.CartItem;
+import com.boschstore.bosch_backend.model.Product;
 import com.boschstore.bosch_backend.model.User;
 import com.boschstore.bosch_backend.repository.CartItemRepository;
+import com.boschstore.bosch_backend.repository.ProductRepository;
 import com.boschstore.bosch_backend.repository.UserRepository;
 import com.boschstore.bosch_backend.service.CartItemService;
-import org.springframework.beans.factory.annotation.Autowired;
+import mapper.CartItemMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     public CartItemServiceImpl(CartItemRepository cartItemRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository, ProductRepository productRepository) {
         this.cartItemRepository = cartItemRepository;
         this.userRepository =  userRepository;
+        this.productRepository = productRepository;
     }
 
     private User getCurrentUser() {
@@ -30,22 +37,24 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public List<CartItem> getAllCartItems() {
+    public List<CartItemResponseDto> getAllCartItems() {
         User currentUser = getCurrentUser();
-        return cartItemRepository.findByUser(currentUser);
+        return cartItemRepository.findByUser(currentUser).stream()
+                .map(CartItemMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public String addCartItem(CartItem cartItem) {
+    public String addCartItem(CartItemDto cartItemDto) {
 
-        if(cartItem.getProduct() == null){
-            throw new IllegalArgumentException("Product must not be null");
-        }
+        Product product = productRepository.findById(cartItemDto.productId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        if(cartItem.getQuantity() < 1){
+        if(cartItemDto.quantity() < 1){
             throw new IllegalArgumentException("Quantity must be at least 1.");
         }
 
+        CartItem cartItem = CartItemMapper.toEntity(cartItemDto, product);
         cartItem.setUser(getCurrentUser());
         cartItemRepository.save(cartItem);
         return "Item added to cart successfully";
