@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,9 +55,20 @@ public class CartItemServiceImpl implements CartItemService {
             throw new IllegalArgumentException("Quantity must be at least 1.");
         }
 
-        CartItem cartItem = CartItemMapper.toEntity(cartItemDto, product);
-        cartItem.setUser(getCurrentUser());
-        cartItemRepository.save(cartItem);
+        User currentUser = getCurrentUser();
+
+        //checking if item already exists in user's cart
+        Optional<CartItem> existingItemOpt = cartItemRepository.findByUserAndProduct(currentUser, product);
+        if(existingItemOpt.isPresent()){
+            CartItem existingItem = existingItemOpt.get();
+            existingItem.setQuantity(existingItem.getQuantity() + cartItemDto.quantity());
+            cartItemRepository.save(existingItem);
+        }else{
+            CartItem cartItem = CartItemMapper.toEntity(cartItemDto, product);
+            cartItem.setUser(getCurrentUser());
+            cartItemRepository.save(cartItem);
+        }
+
         return "Item added to cart successfully";
     }
 

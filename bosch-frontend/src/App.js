@@ -9,6 +9,7 @@ import Cart from "./components/Cart";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import axios from "axios";
+import swal from "sweetalert";
 
 function App() {
   const [productDetails, setProductDetails] = useState();
@@ -22,6 +23,7 @@ function App() {
   function addToken(auth_token) {
     setToken(auth_token);
     window.sessionStorage.setItem("auth_token", auth_token);
+    getAllCartItems();
   }
 
   function removeToken() {
@@ -46,30 +48,91 @@ function App() {
       .catch((err) => {
         console.error("Error fetching products", err);
       });
+
+    getAllCartItems();
   }, [token]);
 
+  function getAllCartItems() {
+    const token = window.sessionStorage.getItem("auth_token");
+    if (!token) return;
+
+    axios
+      .get("http://localhost:8080/api/cart", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("Fetched cart items", res.data);
+        setCart(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching cart items", err);
+      });
+  }
+
   const addToCart = (product, quantity) => {
-    console.log("Dodati proizvod: " + product.name);
-    setCart((prevCart) => {
-      const existingProducts = prevCart.find((item) => item.id === product.id);
-      if (existingProducts) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity }];
-      }
-    });
+    if (!token) return;
+
+    const data = {
+      productId: product.id,
+      quantity: quantity,
+    };
+
+    axios
+      .post("http://localhost:8080/api/cart", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("Product added to cart: ", res.data);
+        setCart((prevCart) => {
+          const existingProduct = prevCart.find(
+            (item) => item.id === product.id
+          );
+          if (existingProduct) {
+            return prevCart.map((item) =>
+              item.id === product.id
+                ? { ...item, quantity: item.quantity + quantity }
+                : item
+            );
+          } else {
+            return [...prevCart, { ...product, quantity }];
+          }
+        });
+        swal("Success!", "Product added to cart!", "success");
+        getAllCartItems();
+      })
+      .catch((err) => {
+        console.error("Error while adding to cart", err);
+        swal("Error!", "Something went wrong. Try again!", "error");
+      });
   };
 
-  const updateCart = (productId, newQuantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
+  const updateCart = (cartItemId, newQuantity) => {
+    if (!token || newQuantity < 1) return;
+
+    axios
+      .put(
+        `http://localhost:8080/api/cart/item/${cartItemId}`,
+        {
+          quantity: newQuantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
-    );
+      .then((res) => {
+        console.log("Cart item updated:", res.data);
+        getAllCartItems();
+      })
+      .catch((err) => {
+        console.error("Error updating cart item", err);
+        swal("Error!", "Could not update item quantity. Try again!", "error");
+      });
   };
 
   const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -78,23 +141,29 @@ function App() {
     <BrowserRouter className="App">
       <NavBar totalQty={totalQty} token={token} removeToken={removeToken} />
       <Routes>
-        <Route path="/login" element={ token ? <Navigate to="/" /> :  <LoginForm addToken={addToken} />} />
+        <Route
+          path="/login"
+          element={
+            token ? <Navigate to="/" /> : <LoginForm addToken={addToken} />
+          }
+        />
         <Route path="/register" element={<RegisterForm />} />
         {token ? (
           <>
             <Route
               path="/"
               element={
-                <ProductGrid
-                  products={products}
-                  addToCart={addToCart}
-                />
+                <ProductGrid products={products} addToCart={addToCart} />
               }
             />
             <Route
               path="/product/:id"
               element={
-                <ProductDetails products={productsData} addToCart={addToCart} token={token} />
+                <ProductDetails
+                  products={productsData}
+                  addToCart={addToCart}
+                  token={token}
+                />
               }
             />
             <Route

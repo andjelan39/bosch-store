@@ -5,17 +5,28 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { HiOutlineMinus } from "react-icons/hi";
 
 function CartItem({ item, updateCart }) {
-  const total = item.price * item.quantity;
+  const product = item.cartProductDto || {
+    id: item.productId,
+    name: item.productName,
+    price: item.productPrice,
+    images: [],
+  };
+
+  if(!product){
+    return <div>Product info missing.</div>
+  }
+
+  const total = product.price * item.quantity;
 
   return (
     <div className="cart-item">
       <div className="left-section">
         <div className="cart-item-image-wrapper">
-          <img src={item.images[0]} className="cart-item-image" />
+          <img src={product.images?.[0]} className="cart-item-image" />
         </div>
         <div className="cart-item-info">
-          <div className="cart-item-name">{item.name}</div>
-          <div className="cart-item-price">{item.price} RSD</div>
+          <div className="cart-item-name">{product.name}</div>
+          <div className="cart-item-price">{product.price} RSD</div>
         </div>
       </div>
 

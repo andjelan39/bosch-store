@@ -10,7 +10,7 @@ function RegisterForm() {
   const [userData, setUserData] = useState({
     username: "",
     password: "",
-    role: "USER",
+    role: "ROLE_USER",
   });
 
   function handleInput(e) {

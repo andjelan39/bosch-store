@@ -2,6 +2,7 @@ package mapper;
 
 import com.boschstore.bosch_backend.dto.CartItemDto;
 import com.boschstore.bosch_backend.dto.CartItemResponseDto;
+import com.boschstore.bosch_backend.dto.CartProductDto;
 import com.boschstore.bosch_backend.model.CartItem;
 import com.boschstore.bosch_backend.model.Product;
 
@@ -15,13 +16,19 @@ public class CartItemMapper {
     }
 
     public static CartItemResponseDto toDto(CartItem cartItem) {
+        Product product = cartItem.getProduct();
+
+        CartProductDto cartProductDto = new CartProductDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImages()
+        );
+
         return new CartItemResponseDto(
                 cartItem.getId(),
-                cartItem.getProduct().getId(),
-                cartItem.getProduct().getName(),
-                cartItem.getProduct().getPrice(),
-                cartItem.getQuantity(),
-                cartItem.getProduct().getPrice() * cartItem.getQuantity()
+                cartProductDto,
+                cartItem.getQuantity()
         );
     }
 
