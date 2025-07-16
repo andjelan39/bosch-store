@@ -1,6 +1,7 @@
 package com.boschstore.bosch_backend.impl;
 
 import com.boschstore.bosch_backend.dto.UserDto;
+import com.boschstore.bosch_backend.dto.UserLoginDto;
 import com.boschstore.bosch_backend.model.User;
 import com.boschstore.bosch_backend.repository.UserRepository;
 import com.boschstore.bosch_backend.service.JWTService;
@@ -39,14 +40,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(UserDto userDto) {
+    public String login(UserLoginDto userLoginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userDto.username(), userDto.password()
+                        userLoginDto.username(), userLoginDto.password()
                 )
         );
         if(authentication.isAuthenticated()) {
-            return jwtService.generateToken(userDto.username());
+            return jwtService.generateToken(userLoginDto.username());
         }
         return "Failed";
     }

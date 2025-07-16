@@ -6,10 +6,26 @@ import productsData from "./data/products.json";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
 import Cart from "./components/Cart";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
 
 function App() {
   const [productDetails, setProductDetails] = useState();
   const [cart, setCart] = useState([]);
+
+  const [token, setToken] = useState(
+    window.sessionStorage.getItem("auth_token") || null
+  );
+
+  function addToken(auth_token) {
+    setToken(auth_token);
+    window.sessionStorage.setItem("auth_token", auth_token);
+  }
+
+  function removeToken() {
+    setToken(null);
+    window.sessionStorage.removeItem("auth_token");
+  }
 
   const getProductDetails = (id) => {
     if (id == null) {
@@ -51,7 +67,7 @@ function App() {
 
   return (
     <BrowserRouter className="App">
-      <NavBar totalQty={totalQty} />
+      <NavBar totalQty={totalQty} token={token} removeToken={removeToken} />
       <Routes>
         <Route
           path="/"
@@ -63,6 +79,8 @@ function App() {
             />
           }
         />
+        <Route path="/login" element={<LoginForm addToken={addToken}/>} />
+        <Route path="/register" element={<RegisterForm />} />
         <Route
           path="/product/:id"
           element={

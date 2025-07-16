@@ -4,7 +4,7 @@ import BoschLogo from "../boschlogo.png";
 import { PiShoppingCartFill } from "react-icons/pi";
 import { Link } from "react-router-dom";
 
-function NavBar({ totalQty }) {
+function NavBar({ totalQty, token, removeToken }) {
   return (
     <div className="navBar-container">
       <div className="navBar-logo">

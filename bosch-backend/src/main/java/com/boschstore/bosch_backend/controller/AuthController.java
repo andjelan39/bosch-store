@@ -1,6 +1,7 @@
 package com.boschstore.bosch_backend.controller;
 
 import com.boschstore.bosch_backend.dto.UserDto;
+import com.boschstore.bosch_backend.dto.UserLoginDto;
 import com.boschstore.bosch_backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(userService.login(userDto), HttpStatus.OK);
+    public ResponseEntity<String> login(@RequestBody UserLoginDto userLoginDto) {
+        return new ResponseEntity<>(userService.login(userLoginDto), HttpStatus.OK);
     }
 
 }
